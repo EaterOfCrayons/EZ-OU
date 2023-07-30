@@ -7,48 +7,7 @@
 /////
 
 
-// Chassis constructor
-Drive chassis (
-  // Left Chassis Ports (negative port will reverse it!)
-  //   the first port is the sensored port (when trackers are not used!)
-  {-1, -2, 3}
 
-  // Right Chassis Ports (negative port will reverse it!)
-  //   the first port is the sensored port (when trackers are not used!)
-  ,{4, 5, -6}
-
-  // IMU Port
-  ,13
-
-  // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
-  //    (or tracking wheel diameter)
-  ,3.25
-
-  // Cartridge RPM
-  //   (or tick per rotation if using tracking wheels)
-  ,600
-
-  // External Gear Ratio (MUST BE DECIMAL)
-  //    (or gear ratio of tracking wheel)
-  // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
-  // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,1.3333
-
-  // Uncomment if using tracking wheels
-  /*
-  // Left Tracking Wheel Ports (negative port will reverse it!)
-  // ,{1, 2} // 3 wire encoder
-  // ,8 // Rotation sensor
-
-  // Right Tracking Wheel Ports (negative port will reverse it!)
-  // ,{-3, -4} // 3 wire encoder
-  // ,-9 // Rotation sensor
-  */
-
-  // Uncomment if tracking wheels are plugged into a 3 wire expander
-  // 3 Wire Port Expander Smart Port
-  // ,1
-);
 
 void terminal_print()
 {
@@ -134,7 +93,7 @@ void autonomous() {
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
-
+  int wing_toggle = -1;
   while (true) {
     chassis.arcade_standard(ez::SPLIT); // Standard split arcade
 
@@ -152,36 +111,38 @@ void opcontrol() {
         intakes = 0;
     }
 
-    // pto
-    if (master.get_digital(DIGITAL_LEFT))
-    {
-        ptol.set_value(false);
-        ptor.set_value(false);
-    }
-    if (master.get_digital(DIGITAL_RIGHT))
-    {
-        ptol.set_value(true);
-        ptor.set_value(true);
-    }
-
     // wing
-    if (master.get_digital(DIGITAL_Y))
-    {
-        wing.set_value(false);
-    }
     if (master.get_digital(DIGITAL_A))
     {
-        wing.set_value(true);
+      wing_toggle = wing_toggle * -1;
+      pros::delay(200);
+    }
+    if (wing_toggle == 1){
+      wing_left.set_value(true);
+      wing_right.set_value(true);
+    }
+    if (wing_toggle == -1) {
+      wing_left.set_value(false);
+      wing_right.set_value(false);
     }
 
+    
     // hook
-    if (master.get_digital(DIGITAL_X))
-    {
-        hook.set_value(false);
+    if (master.get_digital(DIGITAL_B)) {
+      pto_hook(!pto_hook_enabled);
+      pros::delay(500);
     }
-    if (master.get_digital(DIGITAL_B))
-    {
-        hook.set_value(true);
+
+    if (pto_hook_enabled){
+      if (master.get_digital(DIGITAL_UP)){
+        left_pto_1 = 40;
+        left_pto_2 = 40;
+      } else if (master.get_digital(DIGITAL_DOWN)){
+        left_pto_1 = -40;
+        left_pto_2 = -40;
+      } else
+        left_pto_1 = 0;
+        left_pto_2 = 0;
     }
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

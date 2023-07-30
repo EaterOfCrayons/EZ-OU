@@ -228,28 +228,43 @@ void interfered_example() {
 void right_auton(){
   chassis.set_angle(-10);
   intakes = 120;
-  chassis.set_drive_pid(54.5, DRIVE_SPEED, true);
+  chassis.set_drive_pid(53, DRIVE_SPEED, true);
   chassis.wait_drive();
-  chassis.set_drive_pid(-7, DRIVE_SPEED);
+  pros::delay(300);
+  chassis.set_drive_pid(-9, DRIVE_SPEED);
   chassis.wait_drive();
   chassis.set_turn_pid(90, 70);
   chassis.wait_drive();
   intakes = -120;
-  chassis.set_drive_pid(18, 80, true);
+  chassis.set_drive_pid(16, 80, true);
   chassis.wait_drive();
   chassis.set_drive_pid(-18, 80);
   chassis.wait_drive();
-  chassis.set_turn_pid(-70, 70);
+  chassis.set_turn_pid(-120, 70);
   chassis.wait_drive();
   intakes = 120;
-  chassis.set_drive_pid(10, DRIVE_SPEED, true);
+  chassis.set_drive_pid(13.5, DRIVE_SPEED, true);
   chassis.wait_drive();
-  chassis.set_drive_pid(-20, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-19, DRIVE_SPEED, true);
   chassis.wait_drive();
   chassis.set_turn_pid(90, 70);
   chassis.wait_drive();
   intakes = -120;
-  chassis.set_drive_pid(12.5, 80, true);
+  chassis.set_drive_pid(16, 80, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-6, 80);
+  chassis.wait_drive();
+  intakes = 0;
+  chassis.set_turn_pid(0, 70);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-50, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, 70);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-24.5, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  
+
   
 
 }
