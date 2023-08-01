@@ -16,3 +16,4 @@ void default_constants();
 void exit_condition_defaults();
 
 void right_auton();
+void left_auton();

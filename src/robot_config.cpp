@@ -10,7 +10,7 @@ int shooter_port = 9;
 
 #define PTOL_PORT 'A'
 #define PTOR_PORT 'B'
-#define WING_LEFT_PORT 'C'
+#define WING_PORTS 'C'
 #define WING_RIGHT_PORT 'D'
 
 // Robot setup ========================================================================================================================================================================
@@ -25,8 +25,7 @@ pros::MotorGroup intakes({left_intake, right_intake});
 
 pros::ADIDigitalOut ptol(PTOL_PORT); //left power-take-off piston
 pros::ADIDigitalOut ptor(PTOR_PORT); //right power-take-off piston
-pros::ADIDigitalOut wing_left(WING_LEFT_PORT); //hook mechanism piston
-pros::ADIDigitalOut wing_right(WING_RIGHT_PORT); //wing mechanism piston
+pros::ADIDigitalOut wings(WING_PORTS); //hook mechanism piston
 
 // Chassis constructor
 Drive chassis (
@@ -72,32 +71,38 @@ Drive chassis (
 );
 
 //PTO setup
-pros::Motor& left_pto_1 = chassis.left_motors[1];
-pros::Motor& left_pto_2 = chassis.left_motors[2];
+pros::Motor& left_pto = chassis.left_motors[2];
+pros::Motor& right_pto = chassis.right_motors[2];
+
 bool pto_hook_enabled = false;
 
 void pto_hook(bool toggle) {
   pto_hook_enabled = toggle;
-  chassis.pto_toggle({left_pto_1, left_pto_2}, toggle);
+  right_pto.set_brake_mode(E_MOTOR_BRAKE_COAST);
+  chassis.pto_toggle({left_pto, right_pto}, toggle);
   ptol.set_value(toggle);
+  
+  for (int i = 0; i < 6; i++){
+    left_pto = 120;
+    pros::delay(20);
+    left_pto = -120;
+    pros::delay(200); 
+  }
+  left_pto = 0;
+  
 }
 
 void set_hook(int speed, float time, bool coasted) {
   if (!pto_hook) return;
-  left_pto_1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_pto_2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_pto_1 = speed;
-  left_pto_2 = speed;
+  left_pto.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+  left_pto = speed;;
   pros::delay(time);
   if (coasted){
-    left_pto_1.set_brake_mode(E_MOTOR_BRAKE_COAST);
-    left_pto_2.set_brake_mode(E_MOTOR_BRAKE_COAST);
-    left_pto_1 = 0;
-    left_pto_2 = 0; 
+    left_pto.set_brake_mode(E_MOTOR_BRAKE_COAST);
+    left_pto = 0;
   }
   else{
-    left_pto_1 = 0;
-    left_pto_2 = 0; 
+    left_pto = 0;
   }
   
   return;

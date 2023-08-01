@@ -44,8 +44,8 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-    Auton("Right Auton", right_auton),
-    Auton("Example Turn\n\nTurn 3 times.", turn_example),
+    Auton("Right Auton\nSophie <3\nSophie <3\nSophie <3", right_auton),
+    Auton("Left Auton\nSophie <3\nSophie <3\nSophie <3", left_auton),
     Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
     Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
     Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
@@ -118,12 +118,12 @@ void opcontrol() {
       pros::delay(200);
     }
     if (wing_toggle == 1){
-      wing_left.set_value(true);
-      wing_right.set_value(true);
+      wings.set_value(true);
+      wings.set_value(true);
     }
     if (wing_toggle == -1) {
-      wing_left.set_value(false);
-      wing_right.set_value(false);
+      wings.set_value(false);
+      wings.set_value(false);
     }
 
     
@@ -135,14 +135,11 @@ void opcontrol() {
 
     if (pto_hook_enabled){
       if (master.get_digital(DIGITAL_UP)){
-        left_pto_1 = 40;
-        left_pto_2 = 40;
+        left_pto = 120;
       } else if (master.get_digital(DIGITAL_DOWN)){
-        left_pto_1 = -40;
-        left_pto_2 = -40;
+        left_pto = -120;
       } else
-        left_pto_1 = 0;
-        left_pto_2 = 0;
+        left_pto = 0;
     }
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

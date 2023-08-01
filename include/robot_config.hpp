@@ -13,13 +13,14 @@ extern MotorGroup intakes;
 
 extern ADIDigitalOut ptol;
 extern ADIDigitalOut ptor;
-extern ADIDigitalOut wing_left;
-extern ADIDigitalOut wing_right;
+extern ADIDigitalOut wings;
+
 
 extern Drive chassis;
 
-extern Motor& left_pto_1;
-extern Motor& left_pto_2;
+extern Motor& left_pto;
+extern Motor& right_pto;
+
 
 extern bool pto_hook_enabled;
 void pto_hook(bool toggle);

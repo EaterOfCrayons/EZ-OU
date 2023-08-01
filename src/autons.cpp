@@ -228,7 +228,7 @@ void interfered_example() {
 void right_auton(){
   chassis.set_angle(-10);
   intakes = 20;
-  chassis.set_drive_pid(46.3, DRIVE_SPEED, true);
+  chassis.set_drive_pid(47.5, DRIVE_SPEED, true);
   chassis.wait_drive();
   chassis.set_turn_pid(90, 70);
   chassis.wait_drive();
@@ -258,6 +258,32 @@ void right_auton(){
   chassis.wait_drive();
   chassis.set_turn_pid(90, 70);
   chassis.wait_drive();
-  chassis.set_drive_pid(-25.5, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-24.2, DRIVE_SPEED, true);
   chassis.wait_drive();
+}
+
+void left_auton(){
+  chassis.set_angle(10);
+  intakes = 120;
+  chassis.set_drive_pid(48.7, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-90, 70);
+  chassis.wait_drive();
+  intakes = -120;
+  chassis.set_drive_pid(19, 80, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-31, 80);
+  chassis.wait_drive();
+  intakes = 0;
+  chassis.set_turn_pid(43.8, 70);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-60, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  pto_hook(true);
+  pros::delay(200);
+  set_hook(120, 2000, true);
+  chassis.set_drive_pid(12, DRIVE_SPEED);
+  chassis.wait_drive();
+  set_hook(-120, 500, false);
+
 }
