@@ -84,7 +84,7 @@ void pto_hook(bool toggle) {
   
   for (int i = 0; i < 6; i++){
     left_pto = 120;
-    pros::delay(20);
+    pros::delay(40);
     left_pto = -120;
     pros::delay(200); 
   }
