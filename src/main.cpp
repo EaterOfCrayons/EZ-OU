@@ -44,13 +44,13 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-    Auton("Right Auton\nSophie <3\nSophie <3\nSophie <3", right_auton),
-    Auton("Left Auton\nSophie <3\nSophie <3\nSophie <3", left_auton),
-    Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
-    Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
-    Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
-    Auton("Combine all 3 movements", combining_movements),
-    Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
+    Auton("Right Auton\n        ani <3\n        ani <3\n        ani <3", right_auton),
+    Auton("Left Auton\nani <3\nani <3\nani <3", left_auton),
+    Auton("Skills\nnarasimhan has a gyat", skills),
+    Auton("trust alliance", no_auton),
+    //Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
+    //Auton("Combine all 3 movements", combining_movements),
+    //Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
   });
 
   // Initialize chassis and auton selector
@@ -83,7 +83,7 @@ void autonomous() {
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
   
-  pros::Task data_logging(terminal_print);
+  //pros::Task data_logging(terminal_print);
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
@@ -126,6 +126,14 @@ void opcontrol() {
       wings.set_value(false);
     }
 
+    //shooter
+    if(master.get_digital(DIGITAL_R1)){
+      shooter = 120;
+
+    }
+    if(master.get_digital(DIGITAL_R2)){
+      shooter = 0;
+    }
     
     // hook
     if (master.get_digital(DIGITAL_B)) {
@@ -142,5 +150,6 @@ void opcontrol() {
         left_pto = 0;
     }
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
-  }
+    std::cout << left_pto.get_temperature() << "\n";
+  } 
 }

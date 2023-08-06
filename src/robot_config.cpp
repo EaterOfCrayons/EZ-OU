@@ -79,13 +79,14 @@ bool pto_hook_enabled = false;
 void pto_hook(bool toggle) {
   pto_hook_enabled = toggle;
   right_pto.set_brake_mode(E_MOTOR_BRAKE_COAST);
+  right_pto.brake();
   chassis.pto_toggle({left_pto, right_pto}, toggle);
   ptol.set_value(toggle);
   
-  for (int i = 0; i < 6; i++){
-    left_pto = 120;
-    pros::delay(40);
-    left_pto = -120;
+  for (int i = 0; i < 3; i++){
+    left_pto = 60;
+    pros::delay(200);
+    left_pto = -60;
     pros::delay(200); 
   }
   left_pto = 0;
@@ -95,7 +96,7 @@ void pto_hook(bool toggle) {
 void set_hook(int speed, float time, bool coasted) {
   if (!pto_hook) return;
   left_pto.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_pto = speed;;
+  left_pto = speed;
   pros::delay(time);
   if (coasted){
     left_pto.set_brake_mode(E_MOTOR_BRAKE_COAST);

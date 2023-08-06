@@ -260,6 +260,12 @@ void right_auton(){
   chassis.wait_drive();
   chassis.set_drive_pid(-24.2, DRIVE_SPEED, true);
   chassis.wait_drive();
+  //pto_hook(true);
+  //pros::delay(300);
+  //left_pto = 120;
+  //pros::delay(1000);
+  //pto_hook(false);
+  
 }
 
 void left_auton(){
@@ -275,15 +281,60 @@ void left_auton(){
   chassis.set_drive_pid(-31, 80);
   chassis.wait_drive();
   intakes = 0;
-  chassis.set_turn_pid(43.8, 70);
+  chassis.set_turn_pid(42.7, 70);
   chassis.wait_drive();
-  chassis.set_drive_pid(-60, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-61, DRIVE_SPEED, true);
   chassis.wait_drive();
-  pto_hook(true);
-  pros::delay(200);
-  set_hook(120, 2000, true);
+  //pto_hook(true);
+  //set_hook(120, 1000, true);
+  //pros::delay(500);
   chassis.set_drive_pid(12, DRIVE_SPEED);
   chassis.wait_drive();
-  set_hook(-120, 500, false);
+  //left_pto = -120;
+  //pros::delay(300);
+  chassis.set_turn_pid(-45, 70);
+  chassis.wait_drive();
+  //left_pto = 0;
+  chassis.set_drive_pid(-20, DRIVE_SPEED);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-90, 70);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-21, DRIVE_SPEED);
+  chassis.wait_drive();
+  //left_pto = 120;
+  //pros::delay(1000);
+  //pto_hook(false);
 
+}
+
+void skills(){
+  chassis.set_angle(10);
+  intakes = 120;
+  chassis.set_drive_pid(48.7, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-90, 70);
+  chassis.wait_drive();
+  intakes = -120;
+  chassis.set_drive_pid(19, 80, true);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-31, 80);
+  chassis.wait_drive();
+  intakes = 0;
+  chassis.set_turn_pid(42.7, 70);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-61, DRIVE_SPEED, true);
+  chassis.wait_drive();
+  
+  shooter = 120;
+  while(true){
+    chassis.reset_drive_sensor();
+    pros::delay(20);
+  }
+  //chassis.set_turn_pid(52, 70);
+  //chassis.wait_drive();
+  //wings.set_value(true);
+}
+
+void no_auton(){
+  std::cout << "keep yourself safe";
 }

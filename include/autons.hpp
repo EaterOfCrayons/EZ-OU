@@ -17,3 +17,5 @@ void exit_condition_defaults();
 
 void right_auton();
 void left_auton();
+void skills();
+void no_auton();
