@@ -1,20 +1,11 @@
 #include "main.h"
 
-
-/////
-// For instalattion, upgrading, documentations and tutorials, check out website!
-// https://ez-robotics.github.io/EZ-Template/
-/////
-
-
 const int DRIVE_SPEED = 110; // This is 110/127 (around 87% of max speed).  We don't suggest making this 127.
                              // If this is 127 and the robot tries to heading correct, it's only correcting by
                              // making one side slower.  When this is 87%, it's correcting by making one side
                              // faster and one side slower, giving better heading correction.
 const int TURN_SPEED  = 110;
 const int SWING_SPEED = 100;
-
-
 
 ///
 // Constants
@@ -220,121 +211,18 @@ void interfered_example() {
  chassis.wait_drive();
 }
 
-
-
-// . . .
-// Make your own autonomous functions here!
-// . . .
 void right_auton(){
-  chassis.set_angle(-10);
-  intakes = 20;
-  chassis.set_drive_pid(47.5, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  chassis.set_turn_pid(90, 70);
-  chassis.wait_drive();
-  intakes = -120;
-  chassis.set_drive_pid(16, 80, true);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-18, 80);
-  chassis.wait_drive();
-  chassis.set_turn_pid(-120, 70);
-  chassis.wait_drive();
-  intakes = 120;
-  chassis.set_drive_pid(13.5, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-19, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  chassis.set_turn_pid(90, 70);
-  chassis.wait_drive();
-  intakes = -120;
-  chassis.set_drive_pid(16, 80, true);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-6, 80);
-  chassis.wait_drive();
-  intakes = 0;
-  chassis.set_turn_pid(0, 70);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-51.3, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  chassis.set_turn_pid(90, 70);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-24.2, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  //pto_hook(true);
-  //pros::delay(300);
-  //left_pto = 120;
-  //pros::delay(1000);
-  //pto_hook(false);
   
 }
 
 void left_auton(){
-  chassis.set_angle(10);
-  intakes = 120;
-  chassis.set_drive_pid(48.7, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  chassis.set_turn_pid(-90, 70);
-  chassis.wait_drive();
-  intakes = -120;
-  chassis.set_drive_pid(19, 80, true);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-31, 80);
-  chassis.wait_drive();
-  intakes = 0;
-  chassis.set_turn_pid(42.7, 70);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-61, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  //pto_hook(true);
-  //set_hook(120, 1000, true);
-  //pros::delay(500);
-  chassis.set_drive_pid(12, DRIVE_SPEED);
-  chassis.wait_drive();
-  //left_pto = -120;
-  //pros::delay(300);
-  chassis.set_turn_pid(-45, 70);
-  chassis.wait_drive();
-  //left_pto = 0;
-  chassis.set_drive_pid(-20, DRIVE_SPEED);
-  chassis.wait_drive();
-  chassis.set_turn_pid(-90, 70);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-21, DRIVE_SPEED);
-  chassis.wait_drive();
-  //left_pto = 120;
-  //pros::delay(1000);
-  //pto_hook(false);
 
 }
 
 void skills(){
-  chassis.set_angle(10);
-  intakes = 120;
-  chassis.set_drive_pid(48.7, DRIVE_SPEED, true);
-  chassis.wait_drive();
-  chassis.set_turn_pid(-90, 70);
-  chassis.wait_drive();
-  intakes = -120;
-  chassis.set_drive_pid(19, 80, true);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-31, 80);
-  chassis.wait_drive();
-  intakes = 0;
-  chassis.set_turn_pid(42.7, 70);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-61, DRIVE_SPEED, true);
-  chassis.wait_drive();
   
-  shooter = 120;
-  while(true){
-    chassis.reset_drive_sensor();
-    pros::delay(20);
-  }
-  //chassis.set_turn_pid(52, 70);
-  //chassis.wait_drive();
-  //wings.set_value(true);
 }
 
 void no_auton(){
-  std::cout << "keep yourself safe";
+  
 }

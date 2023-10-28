@@ -6,24 +6,31 @@ using namespace pros;
 
 
 // externalize device configurations
-//extern Motor left_intake;
-//extern Motor right_intake;
+extern Motor intake;
 extern Motor shooter;
-extern MotorGroup intakes;
-
-extern ADIDigitalOut ptol;
-extern ADIDigitalOut ptor;
-extern ADIDigitalOut wings;
-
+extern ADIDigitalOut right_wing;
+extern ADIDigitalOut left_wing;
+extern ADIDigitalOut hang;
+extern ADIDigitalOut hook;
 
 extern Drive chassis;
 
-extern Motor& left_pto;
-extern Motor& right_pto;
+extern Rotation left_rot;
+extern Rotation right_rot;
+extern Rotation back_rot;
+extern Rotation cata_rot;
+
+class catapult // creates the catapult class
+{
+public:
+    bool is_continuous{false}; // whether the catapult is set to continuous fire
+    bool override{false};      // whether to manually override catapult control
+    int state{0};              // the state of the catapult. 0: unloaded. 1: loading. 2: loaded. 3:continuous
+    void lower();              // Declare reset function
+    void launch();             // Declare function to fire the catapult
+    void continuous();         // Declare function to fire the catapult continuously
+};
 
 
-extern bool pto_hook_enabled;
-void pto_hook(bool toggle);
-void set_hook(int speed, float time, bool coasted);
-
+extern catapult cata; // creates an instance of the catapult object
 

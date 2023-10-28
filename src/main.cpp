@@ -1,17 +1,48 @@
 #include "main.h"
+#include "robot_config.hpp"
+#include "autons.hpp"
 
+// initialize runtime objects
+double fwd;
+double turning;
+float up;
+float down;
+bool lift = false;
+bool hooker = false;
+pros::MotorGroup rmotors({chassis.right_motors[0], chassis.right_motors[1], chassis.right_motors[2]});
+pros::MotorGroup lmotors({chassis.left_motors[0], chassis.left_motors[1], chassis.left_motors[2]});
 
-/////
-// For instalattion, upgrading, documentations and tutorials, check out website!
-// https://ez-robotics.github.io/EZ-Template/
-/////
+void cata_control()
+{
+    pros::Task continuous{[=] { // creates a lambda task for cata.continuous
+        cata.continuous();
+    }};
+    while (true)
+    {
+        if (cata_rot.get_position() < 1000 && cata.state != 1) // checks if the catapult should be lowered
+        {
+            pros::delay(250);
+            cata.state = 0;
+        }
+        if (cata.override == false)
+        {                                                                 // checks if the catapult is in override mode
+            if (cata.state == 0 && cata.is_continuous) // starts lowering the catapult if the cata is unloaded and not currently loading
+            {
+                cata.lower(); // calls the catapult reset function
+            }
+            if (!cata.is_continuous)
+            { // coasts the motor when the catapult is inactive
+                shooter.set_brake_mode(E_MOTOR_BRAKE_COAST);
+                shooter.brake();
+            }
+        }
 
-
-
+        pros::delay(15);
+    }
+}
 
 void terminal_print()
 {
-    // left_front_motor.set_encoder_units(E_MOTOR_ENCODER_DEGREES);
     while (true)
     {
 
@@ -26,45 +57,32 @@ void terminal_print()
 
 
 void initialize() {
-  // Print our branding over your terminal :D
   ez::print_ez_template();
   
-  pros::delay(500); // Stop the user from doing anything while legacy ports configure.
+  pros::delay(500);
 
-  // Configure your chassis controls
-  chassis.toggle_modify_curve_with_controller(true); // Enables modifying the controller curve with buttons on the joysticks
-  chassis.set_active_brake(0); // Sets the active brake kP. We recommend 0.1.
-  chassis.set_curve_default(9, 9); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
-  default_constants(); // Set the drive to your own constants from autons.cpp!
-  exit_condition_defaults(); // Set the exit conditions to your own constants from autons.cpp!
-
-  // These are already defaulted to these buttons, but you can change the left/right curve buttons here!
-  // chassis.set_left_curve_buttons (pros::E_CONTROLLER_DIGITAL_LEFT, pros::E_CONTROLLER_DIGITAL_RIGHT); // If using tank, only the left side is used. 
-  // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
+  // Configure chassis controls
+  chassis.toggle_modify_curve_with_controller(false); // Enables modifying the controller curve with buttons on the joysticks
+  chassis.set_active_brake(0); // Sets the active brake kP. 
+  chassis.set_curve_default(0, 0); // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)  
+  default_constants(); // Set the drive to constants
+  exit_condition_defaults(); // Set the exit conditions constants
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
-    Auton("Right Auton\n        ani <3\n        ani <3\n        ani <3", right_auton),
-    Auton("Left Auton\nani <3\nani <3\nani <3", left_auton),
-    Auton("Skills\nnarasimhan has a gyat", skills),
-    Auton("trust alliance", no_auton),
-    //Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
-    //Auton("Combine all 3 movements", combining_movements),
-    //Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
+    Auton("Right Auton", right_auton),
+    Auton("Left Auton", left_auton),
+    Auton("Skills", skills),
+    Auton("Trust alliance", no_auton),
   });
 
   // Initialize chassis and auton selector
   chassis.initialize();
   ez::as::initialize();
+  cata_rot.reset_position();
+  pros::Task cata_task(cata_control);
 }
 
-
-
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
 void disabled() {
   // . . .
 }
@@ -87,69 +105,111 @@ void autonomous() {
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
-
-
+// function implementing input curve in arcade drive controls
+void arcadeCurv(pros::controller_analog_e_t power, pros::controller_analog_e_t turn, pros::Controller mast, float t)
+{
+    up = mast.get_analog(power);
+    down = mast.get_analog(turn);
+    if (mast.get_digital(DIGITAL_L2))
+    {
+        fwd = (exp(-t / 10) + exp((fabs(up) - 127) / 10) * (1 - exp(-t / 10))) * up * 0.5;
+        turning = down * 0.3;
+    }
+    else
+    {
+        fwd = (exp(-t / 10) + exp((fabs(up) - 127) / 10) * (1 - exp(-t / 10))) * up;
+        turning = down;
+    }
+    lmotors = (fwd - turning);
+    rmotors = (fwd + turning);
+}
 
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
-  int wing_toggle = -1;
-  while (true) {
-    chassis.arcade_standard(ez::SPLIT); // Standard split arcade
+  while (true)
+  {
+    // calls the arcade drive function
+    arcadeCurv(pros::E_CONTROLLER_ANALOG_LEFT_Y, pros::E_CONTROLLER_ANALOG_RIGHT_X, master, 10);
 
     // intake
-    if (master.get_digital(DIGITAL_L1))
+    if (master.get_digital(DIGITAL_L1)) // intake
     {
-        intakes = 120;
+        intake = 120;
     }
-    if (master.get_digital(DIGITAL_L2))
+    if (master.get_digital(DIGITAL_L2)) // outtake
     {
-        intakes = -120;
+        intake = -120;
     }
-    if (master.get_digital(DIGITAL_L1) == false && master.get_digital(DIGITAL_L2) == false)
+    if (master.get_digital(DIGITAL_L1) == false && master.get_digital(DIGITAL_L2) == false) // stop intake
     {
-        intakes = 0;
+        intake = 0;
     }
 
     // wing
-    if (master.get_digital(DIGITAL_A))
+    if (master.get_digital(DIGITAL_R1)) // wing retract
     {
-      wing_toggle = wing_toggle * -1;
-      pros::delay(200);
+        left_wing.set_value(true);
+        right_wing.set_value(true);
     }
-    if (wing_toggle == 1){
-      wings.set_value(true);
-      wings.set_value(true);
-    }
-    if (wing_toggle == -1) {
-      wings.set_value(false);
-      wings.set_value(false);
+    else if (!master.get_digital(DIGITAL_R1)) // wing expand
+    {
+        right_wing.set_value(false);
+        left_wing.set_value(false);
     }
 
-    //shooter
-    if(master.get_digital(DIGITAL_R1)){
-      shooter = 120;
+    // elevation
+    if (master.get_digital(DIGITAL_R2))
+    {
+        lift = !lift;
+        pros::delay(500);
+    }
+    if (lift)
+    {
+        hang.set_value(true);
 
     }
-    if(master.get_digital(DIGITAL_R2)){
-      shooter = 0;
-    }
-    
-    // hook
-    if (master.get_digital(DIGITAL_B)) {
-      pto_hook(!pto_hook_enabled);
-      pros::delay(500);
+    if (!lift)
+    {
+        hang.set_value(false);
     }
 
-    if (pto_hook_enabled){
-      if (master.get_digital(DIGITAL_UP)){
-        left_pto = 120;
-      } else if (master.get_digital(DIGITAL_DOWN)){
-        left_pto = -120;
-      } else
-        left_pto = 0;
+    // catapult
+    if (master.get_digital(DIGITAL_B)) // continuous launch
+    {
+        cata.is_continuous = !cata.is_continuous;
+        pros::delay(500);
     }
-    pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
-    std::cout << left_pto.get_temperature() << "\n";
-  } 
+
+    // catapult manual override
+    if (master.get_digital(DIGITAL_UP)) // override
+    {
+        cata.override = !cata.override;
+        pros::delay(100);
+    }
+    if (master.get_digital(DIGITAL_B) && cata.override == true) // power catapult
+    {
+        shooter = 120;
+    }
+    if (master.get_digital(DIGITAL_B) == false && cata.override == true) // stop catapult
+    {
+        shooter.brake();
+    }
+
+    // hook mechanism
+    if (master.get_digital(DIGITAL_X))
+    {
+        hooker = !hooker;
+    }
+    if (hooker)
+    {
+        hook.set_value(true);
+    }
+    if (!hooker)
+    {
+        hook.set_value(false);
+    }
+
+    pros::delay(20);
+  }
 }

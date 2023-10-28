@@ -31,12 +31,14 @@ int inertial_sensor_port = 14;
 // Robot setup ========================================================================================================================================================================
 
 // Defines motors:
+/*
 pros::Motor left_front_motor(left_front_port, pros::E_MOTOR_GEAR_BLUE);      // blue cartridge, 11W
 pros::Motor left_middle_motor(left_middle_port, pros::E_MOTOR_GEARSET_06);   // blue cartridge, 11W
 pros::Motor left_back_motor(left_back_port, pros::E_MOTOR_GEAR_BLUE);        // blue cartridge, 11W
 pros::Motor right_front_motor(right_front_port, pros::E_MOTOR_GEAR_BLUE);    // blue cartridge, 11W
 pros::Motor right_middle_motor(right_middle_port, pros::E_MOTOR_GEARSET_06); // blue cartridge, 11W
 pros::Motor right_back_motor(right_back_port, pros::E_MOTOR_GEAR_BLUE);      // blue cartridge, 11W
+*/
 pros::Motor intake(intake_port, pros::E_MOTOR_GEAR_BLUE);                    // blue cartridge, 11W
 pros::Motor shooter(shooter_port, pros::E_MOTOR_GEAR_RED);                   // red cartridge, 11W
 
@@ -48,20 +50,24 @@ pros::ADIDigitalOut sled(SLED_PORT);             // sled
 pros::ADIDigitalOut hang(LIFT_PORT);             // lift piston
 pros::ADIDigitalOut hook(HOOK_PORT);             // hook piston
 
+// Defines catapult rotation sensor:
+
+pros::Rotation cata_rot(cata_rot_port, true); // catapult rotation sensor
+
 // Chassis constructor
 Drive chassis(
     // Left Chassis Ports (negative port will reverse it!)
     //   the first port is the sensored port (when trackers are not used!)
-    {-1, -2, 3}
+    {left_front_port, left_middle_port, left_back_port}
 
     // Right Chassis Ports (negative port will reverse it!)
     //   the first port is the sensored port (when trackers are not used!)
     ,
-    {4, 5, -6}
+    {right_front_port, right_middle_port, right_back_port}
 
     // IMU Port
     ,
-    13
+    inertial_sensor_port
 
     // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
     //    (or tracking wheel diameter)
@@ -96,39 +102,43 @@ Drive chassis(
     // ,1
 );
 
-// PTO setup
-pros::Motor &left_pto_1 = chassis.left_motors[1];
-pros::Motor &left_pto_2 = chassis.left_motors[2];
-bool pto_hook_enabled = false;
-
-void pto_hook(bool toggle)
-{
-  pto_hook_enabled = toggle;
-  chassis.pto_toggle({left_pto_1, left_pto_2}, toggle);
-  ptol.set_value(toggle);
+void catapult::lower()
+{ // catapult reset function
+    shooter.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    state = 1; // sets the state to "loading"
+    while (cata_rot.get_position() < 5500)
+    {                  // executes while catapult is not at the desired angle
+        shooter = 75; // outputs power to the catapult motor
+        pros::delay(10);
+    }
+    shooter.brake(); // stops the catapult motor
+    state = 2;       // sets the state to "loaded"
 }
 
-void set_hook(int speed, float time, bool coasted)
-{
-  if (!pto_hook)
-    return;
-  left_pto_1.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_pto_2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-  left_pto_1 = speed;
-  left_pto_2 = speed;
-  pros::delay(time);
-  if (coasted)
-  {
-    left_pto_1.set_brake_mode(E_MOTOR_BRAKE_COAST);
-    left_pto_2.set_brake_mode(E_MOTOR_BRAKE_COAST);
-    left_pto_1 = 0;
-    left_pto_2 = 0;
-  }
-  else
-  {
-    left_pto_1 = 0;
-    left_pto_2 = 0;
-  }
-
-  return;
+void catapult::launch()
+{ // function to fire the catapult
+    shooter.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    shooter = 120;
+    pros::delay(200);
+    // }
+    shooter.brake();
 }
+
+void catapult::continuous()
+{ // function to repeatedly fire the catapult
+
+    while (true)
+    {
+        if (cata.state == 2 && cata.is_continuous)
+        {
+
+            cata.launch();
+            pros::delay(100);
+        }
+        pros::delay(20);
+    }
+
+}
+
+catapult cata; // creates an instance of the catapult object
+
