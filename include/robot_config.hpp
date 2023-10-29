@@ -13,6 +13,9 @@ extern ADIDigitalOut left_wing;
 extern ADIDigitalOut hang;
 extern ADIDigitalOut hook;
 
+extern MotorGroup left_motors;
+extern MotorGroup right_motors;
+
 extern Drive chassis;
 
 extern Rotation left_rot;

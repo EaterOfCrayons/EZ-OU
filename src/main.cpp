@@ -9,8 +9,6 @@ float up;
 float down;
 bool lift = false;
 bool hooker = false;
-pros::MotorGroup rmotors({chassis.right_motors[0], chassis.right_motors[1], chassis.right_motors[2]});
-pros::MotorGroup lmotors({chassis.left_motors[0], chassis.left_motors[1], chassis.left_motors[2]});
 
 void cata_control()
 {
@@ -26,14 +24,9 @@ void cata_control()
         }
         if (cata.override == false)
         {                                                                 // checks if the catapult is in override mode
-            if (cata.state == 0 && cata.is_continuous) // starts lowering the catapult if the cata is unloaded and not currently loading
+            if (cata.state == 0) // starts lowering the catapult if the cata is unloaded and not currently loading
             {
                 cata.lower(); // calls the catapult reset function
-            }
-            if (!cata.is_continuous)
-            { // coasts the motor when the catapult is inactive
-                shooter.set_brake_mode(E_MOTOR_BRAKE_COAST);
-                shooter.brake();
             }
         }
 
@@ -58,9 +51,7 @@ void terminal_print()
 
 void initialize() {
   ez::print_ez_template();
-  
   pros::delay(500);
-
   // Configure chassis controls
   chassis.toggle_modify_curve_with_controller(false); // Enables modifying the controller curve with buttons on the joysticks
   chassis.set_active_brake(0); // Sets the active brake kP. 
@@ -81,10 +72,11 @@ void initialize() {
   ez::as::initialize();
   cata_rot.reset_position();
   pros::Task cata_task(cata_control);
+  pros::Task record(terminal_print);
 }
 
 void disabled() {
-  // . . .
+
 }
 
 
@@ -110,18 +102,12 @@ void arcadeCurv(pros::controller_analog_e_t power, pros::controller_analog_e_t t
 {
     up = mast.get_analog(power);
     down = mast.get_analog(turn);
-    if (mast.get_digital(DIGITAL_L2))
-    {
-        fwd = (exp(-t / 10) + exp((fabs(up) - 127) / 10) * (1 - exp(-t / 10))) * up * 0.5;
-        turning = down * 0.3;
-    }
-    else
-    {
-        fwd = (exp(-t / 10) + exp((fabs(up) - 127) / 10) * (1 - exp(-t / 10))) * up;
-        turning = down;
-    }
-    lmotors = (fwd - turning);
-    rmotors = (fwd + turning);
+ 
+    fwd = (exp(-t / 10) + exp((fabs(up) - 127) / 10) * (1 - exp(-t / 10))) * up;
+    turning = -1*down;
+    
+    left_motors = (fwd - turning);
+    right_motors = (fwd + turning);
 }
 
 void opcontrol() {

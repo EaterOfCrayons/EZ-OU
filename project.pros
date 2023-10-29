@@ -188,6 +188,8 @@
         "version": "3.7.3"
       }
     },
-    "upload_options": {}
+    "upload_options": {
+      "slot": 2
+    }
   }
 }

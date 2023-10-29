@@ -31,14 +31,18 @@ int inertial_sensor_port = 14;
 // Robot setup ========================================================================================================================================================================
 
 // Defines motors:
-/*
+
 pros::Motor left_front_motor(left_front_port, pros::E_MOTOR_GEAR_BLUE);      // blue cartridge, 11W
 pros::Motor left_middle_motor(left_middle_port, pros::E_MOTOR_GEARSET_06);   // blue cartridge, 11W
 pros::Motor left_back_motor(left_back_port, pros::E_MOTOR_GEAR_BLUE);        // blue cartridge, 11W
 pros::Motor right_front_motor(right_front_port, pros::E_MOTOR_GEAR_BLUE);    // blue cartridge, 11W
 pros::Motor right_middle_motor(right_middle_port, pros::E_MOTOR_GEARSET_06); // blue cartridge, 11W
 pros::Motor right_back_motor(right_back_port, pros::E_MOTOR_GEAR_BLUE);      // blue cartridge, 11W
-*/
+
+pros::MotorGroup left_motors({left_front_motor, left_middle_motor, left_back_motor});
+pros::MotorGroup right_motors({right_front_motor, right_middle_motor, right_back_motor});
+
+
 pros::Motor intake(intake_port, pros::E_MOTOR_GEAR_BLUE);                    // blue cartridge, 11W
 pros::Motor shooter(shooter_port, pros::E_MOTOR_GEAR_RED);                   // red cartridge, 11W
 
@@ -84,7 +88,7 @@ Drive chassis(
     // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
     // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
     ,
-    1.3333
+    1.667
 
     // Uncomment if using tracking wheels
     /*
