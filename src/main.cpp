@@ -36,6 +36,8 @@ void cata_control()
 
 void terminal_print()
 {
+    int counter {0}; 
+    
     while (true)
     {
 
@@ -43,8 +45,10 @@ void terminal_print()
         float position_float = (fabs(chassis.left_sensor()) + fabs(chassis.right_sensor())) / 2;
         std::string voltage_str = std::to_string(voltage_float); // converts the float variables to strings
         std::string position_str = std::to_string(position_float);
-        std::cout << voltage_str << "," << position_str << "\n";
+        std::cout << counter << "," << voltage_str << "," << position_str << "\n";
         pros::delay(50);
+        counter++;
+        
     }
 }
 
