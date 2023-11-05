@@ -190,6 +190,7 @@ void opcontrol() {
     if (master.get_digital(DIGITAL_X))
     {
         hooker = !hooker;
+        pros::delay(200);
     }
     if (hooker)
     {
