@@ -213,7 +213,7 @@ void right_auton()
   chassis.set_drive_pid(5.5, 100);
   chassis.wait_drive();
   pros::delay(200);
-  chassis.set_drive_pid(-35, 80);
+  chassis.set_drive_pid(-34, 80);
   chassis.wait_drive();
   chassis.set_turn_pid(180, 120);
   chassis.wait_drive();
@@ -225,15 +225,23 @@ void right_auton()
   chassis.set_swing_pid(ez::RIGHT_SWING, 90, 120);
   chassis.wait_drive();
   intake = 127;
-  chassis.set_drive_pid(20, 127);
+  chassis.set_drive_pid(17, 127);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-17, 120);
+  chassis.wait_drive();
+  left_wing.set_value(false);
+  chassis.set_turn_pid(-70, 120);
   chassis.wait_drive();
   chassis.set_drive_pid(-20, 120);
   chassis.wait_drive();
-  chassis.set_turn_pid(135, 120);
+  chassis.set_drive_pid(17, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(23.5, 120);
   chassis.wait_drive();
   intake = -127;
-  chassis.set_drive_pid(70, 120);
+  chassis.set_drive_pid(50, 120);
   chassis.wait_drive();
+  
 }
 
 void left_auton()
