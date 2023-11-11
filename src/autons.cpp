@@ -1,4 +1,6 @@
 #include "main.h"
+#include "robot_config.hpp"
+#include "autons.hpp"
 
 const int DRIVE_SPEED = 110; // This is 110/127 (around 87% of max speed).  We don't suggest making this 127.
                              // If this is 127 and the robot tries to heading correct, it's only correcting by
@@ -212,7 +214,6 @@ void right_auton()
   intake = -127;
   chassis.set_drive_pid(5.5, 100);
   chassis.wait_drive();
-  pros::delay(200);
   chassis.set_drive_pid(-34, 80);
   chassis.wait_drive();
   chassis.set_turn_pid(180, 120);
@@ -236,11 +237,21 @@ void right_auton()
   chassis.wait_drive();
   chassis.set_drive_pid(17, 120);
   chassis.wait_drive();
-  chassis.set_turn_pid(23.5, 120);
+  chassis.set_turn_pid(24.5, 120);
   chassis.wait_drive();
   intake = -127;
-  chassis.set_drive_pid(50, 120);
+  chassis.set_drive_pid(49, 120);
   chassis.wait_drive();
+  chassis.set_turn_pid(90, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(37, 120);
+  chassis.wait_drive();
+  chassis.set_swing_pid(ez::RIGHT_SWING, 180, 127);
+  chassis.wait_drive();
+  left_wing.set_value(true);
+  chassis.set_drive_pid(40, 127);
+  chassis.wait_drive();
+
   
 }
 
@@ -250,6 +261,41 @@ void left_auton()
 
 void skills()
 {
+  chassis.set_turn_pid(-25, 120);
+  chassis.wait_drive();
+  /*
+  hook.set_value(true);
+  cata.is_continuous = true;
+  pros::delay(40000);
+  cata.is_continuous = false;
+  */
+  chassis.set_turn_pid(5, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-85, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(75, 120);
+  chassis.wait_drive();
+  left_wing.set_value(true);
+  chassis.set_drive_pid(40, 90);
+  chassis.wait_drive();
+  left_wing.set_value(false);
+  chassis.set_turn_pid(45, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(24, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(180, 120);
+  chassis.wait_drive();
+  left_wing.set_value(true);
+  chassis.set_drive_pid(45, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-10, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(0, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-10, 120);
+  chassis.wait_drive();
+
+
 }
 
 void no_auton()

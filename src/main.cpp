@@ -12,7 +12,7 @@ bool hooker = false;
 
 void cata_control()
 {
-    pros::Task continuous{[=] { // creates a lambda task for cata.continuous
+    pros::Task continuous  {[=] { // creates a lambda task for cata.continuous
         cata.continuous();
     }};
     while (true)
