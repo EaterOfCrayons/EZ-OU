@@ -124,7 +124,6 @@ void catapult::launch()
     shooter.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     shooter = 120;
     pros::delay(200);
-    // }
     shooter.brake();
 }
 
@@ -133,11 +132,14 @@ void catapult::continuous()
 
     while (true)
     {
+        
         if (cata.state == 2 && cata.is_continuous)
         {
-
+            
             cata.launch();
             pros::delay(100);
+        } else if (!cata.is_continuous){
+            shooter.set_brake_mode(E_MOTOR_BRAKE_COAST);
         }
         pros::delay(20);
     }

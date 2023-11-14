@@ -9,6 +9,7 @@ float up;
 float down;
 bool lift = false;
 bool hooker = false;
+bool wedge = false;
 
 void cata_control()
 {
@@ -24,7 +25,7 @@ void cata_control()
         }
         if (cata.override == false)
         {                                                                 // checks if the catapult is in override mode
-            if (cata.state == 0) // starts lowering the catapult if the cata is unloaded and not currently loading
+            if (cata.state == 0 && cata.is_continuous) // starts lowering the catapult if the cata is unloaded and not currently loading
             {
                 cata.lower(); // calls the catapult reset function
             }
@@ -117,9 +118,11 @@ void arcadeCurv(pros::controller_analog_e_t power, pros::controller_analog_e_t t
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+  left_wing.set_value(false);
   while (true)
-  {
-    // calls the arcade drive function
+  {    // calls the arcade drive function
+
+
     arcadeCurv(pros::E_CONTROLLER_ANALOG_LEFT_Y, pros::E_CONTROLLER_ANALOG_RIGHT_X, master, 10);
 
     // intake
@@ -199,6 +202,21 @@ void opcontrol() {
     if (!hooker)
     {
         hook.set_value(false);
+    }
+
+    // sled/wedge mechanism
+    if (master.get_digital(DIGITAL_DOWN))
+    {
+        wedge = !wedge;
+        pros::delay(200);
+    }
+    if (wedge)
+    {
+        sled.set_value(true);
+    }
+    if (!wedge)
+    {
+        sled.set_value(false);
     }
 
     pros::delay(20);

@@ -12,6 +12,7 @@ extern ADIDigitalOut right_wing;
 extern ADIDigitalOut left_wing;
 extern ADIDigitalOut hang;
 extern ADIDigitalOut hook;
+extern ADIDigitalOut sled;
 
 extern MotorGroup left_motors;
 extern MotorGroup right_motors;
