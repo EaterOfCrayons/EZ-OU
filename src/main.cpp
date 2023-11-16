@@ -18,14 +18,13 @@ void cata_control()
     }};
     while (true)
     {
-        if (cata_rot.get_position() < 1000 && cata.state != 1) // checks if the catapult should be lowered
+        if (cata_rot.get_position() < 1000 && cata.state != 1 ) // checks if the catapult should be lowered
         {
-            pros::delay(250);
             cata.state = 0;
-        }
+        } 
         if (cata.override == false)
         {                                                                 // checks if the catapult is in override mode
-            if (cata.state == 0 && cata.is_continuous) // starts lowering the catapult if the cata is unloaded and not currently loading
+            if (cata.state == 0) // starts lowering the catapult if the cata is unloaded and not currently loading
             {
                 cata.lower(); // calls the catapult reset function
             }

@@ -42,9 +42,8 @@ pros::Motor right_back_motor(right_back_port, pros::E_MOTOR_GEAR_BLUE);      // 
 pros::MotorGroup left_motors({left_front_motor, left_middle_motor, left_back_motor});
 pros::MotorGroup right_motors({right_front_motor, right_middle_motor, right_back_motor});
 
-
-pros::Motor intake(intake_port, pros::E_MOTOR_GEAR_BLUE);                    // blue cartridge, 11W
-pros::Motor shooter(shooter_port, pros::E_MOTOR_GEAR_RED);                   // red cartridge, 11W
+pros::Motor intake(intake_port, pros::E_MOTOR_GEAR_BLUE);  // blue cartridge, 11W
+pros::Motor shooter(shooter_port, pros::E_MOTOR_GEAR_RED); // red cartridge, 11W
 
 // Define pneumatics:
 
@@ -110,9 +109,9 @@ void catapult::lower()
 { // catapult reset function
     shooter.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     state = 1; // sets the state to "loading"
-    while (cata_rot.get_position() < 5500)
+    while (cata_rot.get_position() < 4000)
     {                  // executes while catapult is not at the desired angle
-        shooter = 75; // outputs power to the catapult motor
+        shooter = 127; // outputs power to the catapult motor
         pros::delay(10);
     }
     shooter.brake(); // stops the catapult motor
@@ -132,19 +131,15 @@ void catapult::continuous()
 
     while (true)
     {
-        
+
         if (cata.state == 2 && cata.is_continuous)
         {
-            
+
             cata.launch();
             pros::delay(100);
-        } else if (!cata.is_continuous){
-            shooter.set_brake_mode(E_MOTOR_BRAKE_COAST);
         }
         pros::delay(20);
     }
-
 }
 
 catapult cata; // creates an instance of the catapult object
-

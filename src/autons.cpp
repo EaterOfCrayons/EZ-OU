@@ -210,11 +210,10 @@ void interfered_example()
 
 void right_auton()
 {
-
   intake = -127;
   chassis.set_drive_pid(5.5, 100);
   chassis.wait_drive();
-  chassis.set_drive_pid(-34, 80);
+  chassis.set_drive_pid(-37, 80);   
   chassis.wait_drive();
   chassis.set_turn_pid(180, 120);
   chassis.wait_drive();
@@ -229,17 +228,17 @@ void right_auton()
   intake = 127;
   chassis.set_drive_pid(17, 127);
   chassis.wait_drive();
-  chassis.set_drive_pid(-17, 120);
+  chassis.set_drive_pid(-20, 120);
   chassis.wait_drive();
   right_wing.set_value(false);
   left_wing.set_value(false);
   chassis.set_turn_pid(-70, 120);
   chassis.wait_drive();
-  chassis.set_drive_pid(-20, 120);
+  chassis.set_drive_pid(-24, 120);
   chassis.wait_drive();
-  chassis.set_drive_pid(17, 120);
+  chassis.set_drive_pid(21, 120);
   chassis.wait_drive();
-  chassis.set_turn_pid(24.5, 120);
+  chassis.set_turn_pid(27, 120);
   chassis.wait_drive();
   intake = -127;
   chassis.set_drive_pid(49, 120);
