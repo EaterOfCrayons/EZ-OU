@@ -213,7 +213,7 @@ void right_auton()
   intake = -127;
   chassis.set_drive_pid(5.5, 100);
   chassis.wait_drive();
-  chassis.set_drive_pid(-37, 80);   
+  chassis.set_drive_pid(-37, 80);
   chassis.wait_drive();
   chassis.set_turn_pid(180, 120);
   chassis.wait_drive();
@@ -244,7 +244,7 @@ void right_auton()
   chassis.set_drive_pid(49, 120);
   chassis.wait_drive();
   chassis.set_turn_pid(90, 120);
-  chassis.wait_drive(); 
+  chassis.wait_drive();
   chassis.set_drive_pid(20, 120);
   chassis.wait_drive();
   chassis.set_swing_pid(ez::LEFT_SWING, 180, 120);
@@ -253,8 +253,6 @@ void right_auton()
   right_wing.set_value(true);
   chassis.set_drive_pid(40, 127);
   chassis.wait_drive();
-
-  
 }
 
 void left_auton()
@@ -263,40 +261,69 @@ void left_auton()
 
 void skills()
 {
-  chassis.set_turn_pid(-25, 120);
-  chassis.wait_drive(); 
-  hook.set_value(true);
-  cata.is_continuous = true;
-  pros::delay(40000);
-  cata.is_continuous = false;
-  hook.set_value(false);
-  chassis.set_turn_pid(5, 120);
-  chassis.wait_drive();
-  chassis.set_drive_pid(-85, 120); 
-  chassis.wait_drive();
-  chassis.set_turn_pid(75, 120);
-  chassis.wait_drive();
-  left_wing.set_value(true);
-  chassis.set_drive_pid(40, 90);
-  chassis.wait_drive();
-  left_wing.set_value(false);
   chassis.set_turn_pid(45, 120);
   chassis.wait_drive();
-  chassis.set_drive_pid(24, 120);
+  chassis.set_drive_pid(10, 120);
   chassis.wait_drive();
-  chassis.set_turn_pid(180, 120);
+  chassis.set_turn_pid(-24, 120);
+  chassis.wait_drive();
+  hook.set_value(true);
+  cata.is_continuous = true;
+  pros::delay(35000); //****************************
+  cata.is_continuous = false;
+  hook.set_value(false);
+  chassis.set_turn_pid(45, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-10, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(2, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-85, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(135, 120);
+  chassis.wait_drive();
+  right_wing.set_value(true);
+  chassis.set_drive_pid(35, 120);
+  chassis.wait_drive();
+  left_wing.set_value(false);
+  right_wing.set_value(false);
+  chassis.set_drive_pid(-35, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(-45, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-40, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-27, 120);
+  chassis.wait_drive();
+  chassis.set_turn_pid(50, 120);
   chassis.wait_drive();
   left_wing.set_value(true);
-  chassis.set_drive_pid(45, 120);
+  right_wing.set_value(true);
+  chassis.set_drive_pid(50, 120);
   chassis.wait_drive();
-  chassis.set_drive_pid(-10, 120);
+  left_wing.set_value(false);
+  right_wing.set_value(false);
+  chassis.set_swing_pid(ez::LEFT_SWING, 180, 120);
   chassis.wait_drive();
-  chassis.set_turn_pid(0, 120);
+  left_wing.set_value(true);
+  right_wing.set_value(true);
+  chassis.set_drive_pid(29, 120);
   chassis.wait_drive();
-  chassis.set_drive_pid(-10, 120);
+  chassis.set_drive_pid(-29, 120);
   chassis.wait_drive();
-
-
+  left_wing.set_value(false);
+  right_wing.set_value(false);
+  chassis.set_turn_pid(90, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-15, 120);
+  chassis.set_swing_pid(ez::LEFT_SWING, 180, 120);
+  chassis.wait_drive();
+  left_wing.set_value(true);
+  right_wing.set_value(true);
+  chassis.set_drive_pid(25, 120);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-25, 120);
+  chassis.wait_drive();
 }
 
 void no_auton()

@@ -72,20 +72,15 @@ Drive chassis(
     ,
     inertial_sensor_port
 
-    // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
-    //    (or tracking wheel diameter)
+    // Wheel Diameter
     ,
     3.25
 
     // Cartridge RPM
-    //   (or tick per rotation if using tracking wheels)
     ,
     600
 
-    // External Gear Ratio (MUST BE DECIMAL)
-    //    (or gear ratio of tracking wheel)
-    // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
-    // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
+    // External Gear Ratio 
     ,
     1.667
 
