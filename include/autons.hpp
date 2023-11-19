@@ -13,6 +13,7 @@ void combining_movements();
 void interfered_example();
 
 void default_constants();
+void push_constants();
 void exit_condition_defaults();
 
 void right_auton();
