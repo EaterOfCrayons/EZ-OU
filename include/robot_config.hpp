@@ -10,19 +10,18 @@ extern Motor intake;
 extern Motor shooter;
 extern ADIDigitalOut right_wing;
 extern ADIDigitalOut left_wing;
-extern ADIDigitalOut hang;
-extern ADIDigitalOut hook;
+extern ADIDigitalOut pto_piston;
+extern ADIDigitalOut ratchet;
 extern ADIDigitalOut sled;
+extern ADIDigitalOut hook;
 
 extern MotorGroup left_motors;
 extern MotorGroup right_motors;
 
 extern Drive chassis;
 
-extern Rotation left_rot;
-extern Rotation right_rot;
-extern Rotation back_rot;
 extern Rotation cata_rot;
+extern Rotation lift_rot;
 
 class catapult // creates the catapult class
 {
@@ -35,6 +34,12 @@ public:
     void continuous();         // Declare function to fire the catapult continuously
 };
 
+class ptoClass // creates the pto class
+{
+    public:
+    bool pto_enable{false};
+    void set_pto(bool toggle);
+};
 
+extern ptoClass pto;
 extern catapult cata; // creates an instance of the catapult object
-

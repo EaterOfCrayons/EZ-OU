@@ -5,26 +5,25 @@
 
 int left_front_port = -1;
 int left_middle_port = -2;
-int left_back_port = 3;
+int left_back_port = -3;
 
 int right_front_port = 4;
 int right_middle_port = 5;
-int right_back_port = -6;
+int right_back_port = 6;
 
 int intake_port = -7;
 
-int shooter_port = -9;
+int shooter_port = -8;
 
-int left_rot_port = 10;
-int right_rot_port = 11;
-int back_rot_port = 12;
-int cata_rot_port = 13;
+int cata_rot_port = 9;
+int lift_rot_port = 10;
 
-int inertial_sensor_port = 14;
+int inertial_sensor_port = 11;
 
 #define LEFT_WING_PORT 'A'
 #define RIGHT_WING_PORT 'B'
-#define LIFT_PORT 'C'
+#define PTO_PORT 'C'
+#define RATCHET_PORT 'D'
 #define SLED_PORT 'E'
 #define HOOK_PORT 'F'
 
@@ -50,12 +49,14 @@ pros::Motor shooter(shooter_port, pros::E_MOTOR_GEAR_RED); // red cartridge, 11W
 pros::ADIDigitalOut left_wing(LEFT_WING_PORT);   // wing mechanism piston
 pros::ADIDigitalOut right_wing(RIGHT_WING_PORT); // wing mechanism piston
 pros::ADIDigitalOut sled(SLED_PORT);             // sled
-pros::ADIDigitalOut hang(LIFT_PORT);             // lift piston
+pros::ADIDigitalOut pto_piston(PTO_PORT);        // pto piston
 pros::ADIDigitalOut hook(HOOK_PORT);             // hook piston
+pros::ADIDigitalOut ratchet(RATCHET_PORT);       // ratchet piston
 
-// Defines catapult rotation sensor:
+// Defines rotation sensors:
 
-pros::Rotation cata_rot(cata_rot_port, true); // catapult rotation sensor
+pros::Rotation cata_rot(cata_rot_port, true);  // catapult rotation sensor
+pros::Rotation lift_rot(lift_rot_port, false); // lift rotation sensor
 
 // Chassis constructor
 Drive chassis(
@@ -80,7 +81,7 @@ Drive chassis(
     ,
     600
 
-    // External Gear Ratio 
+    // External Gear Ratio
     ,
     1.667
 
@@ -100,6 +101,55 @@ Drive chassis(
     // ,1
 );
 
+// pto setup
+
+void ptoClass::set_pto(bool toggle)
+{
+    pto_enable = toggle;
+
+    if (toggle)
+    {
+        
+        pto_piston.set_value(toggle);
+        right_motors = 30;
+        left_motors = 30;
+        pros::delay(200);
+        right_motors = 0;
+        left_motors = 0;
+        chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle);
+        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
+        chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
+        while (lift_rot.get_position() < 7000)
+        {
+            chassis.left_motors[2] = 120;
+            chassis.right_motors[2] = 120;
+        }
+        chassis.right_motors[2] = 0;
+        chassis.left_motors[2] = 0;
+    } else if (!toggle){
+        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
+        chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
+        while (lift_rot.get_position() > 1500){
+            chassis.left_motors[2] = -120;
+            chassis.right_motors[2] = -120;
+        }
+        chassis.right_motors[2] = 0;
+        chassis.left_motors[2] = 0;
+        pto_piston.set_value(toggle);
+        right_motors = -30;
+        left_motors = -30;
+        pros::delay(600);
+        right_motors = 0;
+        left_motors = 0;
+        chassis.right_motors[2] = 0;
+        chassis.left_motors[2] = 0;
+        chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle);
+
+    }
+    master.rumble("-");
+}
+
+// catapult control
 void catapult::lower()
 { // catapult reset function
     shooter.set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -138,3 +188,4 @@ void catapult::continuous()
 }
 
 catapult cata; // creates an instance of the catapult object
+ptoClass pto;  // creates an instance of the pto object

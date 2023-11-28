@@ -7,9 +7,9 @@ double fwd;
 double turning;
 float up;
 float down;
-bool lift = false;
 bool hooker = false;
 bool wedge = false;
+bool lifted = false;
 
 void cata_control()
 {
@@ -22,13 +22,12 @@ void cata_control()
         {
             cata.state = 0;
         } 
-        if (cata.override == false)
-        {                                                                 // checks if the catapult is in override mode
-            if (cata.state == 0) // starts lowering the catapult if the cata is unloaded and not currently loading
-            {
-                cata.lower(); // calls the catapult reset function
-            }
+                                                                    // checks if the catapult is in override mode
+        if (cata.state == 0) // starts lowering the catapult if the cata is unloaded and not currently loading
+        {
+            cata.lower(); // calls the catapult reset function
         }
+        
 
         pros::delay(15);
     }
@@ -75,8 +74,9 @@ void initialize() {
   chassis.initialize();
   ez::as::initialize();
   cata_rot.reset_position();
+  lift_rot.reset_position();
   pros::Task cata_task(cata_control);
-  pros::Task record(terminal_print);
+  //pros::Task record(terminal_print);
 }
 
 void disabled() {
@@ -96,8 +96,6 @@ void autonomous() {
   chassis.reset_gyro(); // Reset gyro position to 0
   chassis.reset_drive_sensor(); // Reset drive sensors to 0
   chassis.set_drive_brake(MOTOR_BRAKE_HOLD); // Set motors to hold.  This helps autonomous consistency.
-  
-  //pros::Task data_logging(terminal_print);
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
@@ -150,22 +148,6 @@ void opcontrol() {
         left_wing.set_value(false);
     }
 
-    // elevation
-    if (master.get_digital(DIGITAL_R2))
-    {
-        lift = !lift;
-        pros::delay(500);
-    }
-    if (lift)
-    {
-        hang.set_value(true);
-
-    }
-    if (!lift)
-    {
-        hang.set_value(false);
-    }
-
     // catapult
     if (master.get_digital(DIGITAL_B)) // continuous launch
     {
@@ -173,20 +155,6 @@ void opcontrol() {
         pros::delay(500);
     }
 
-    // catapult manual override
-    if (master.get_digital(DIGITAL_UP)) // override
-    {
-        cata.override = !cata.override;
-        pros::delay(100);
-    }
-    if (master.get_digital(DIGITAL_B) && cata.override == true) // power catapult
-    {
-        shooter = 120;
-    }
-    if (master.get_digital(DIGITAL_B) == false && cata.override == true) // stop catapult
-    {
-        shooter.brake();
-    }
 
     // hook mechanism
     if (master.get_digital(DIGITAL_X))
@@ -203,6 +171,16 @@ void opcontrol() {
         hook.set_value(false);
     }
 
+    // pto lift mechanism
+    if(master.get_digital(DIGITAL_UP)){
+        lifted = !lifted;
+        pros::Task engagePto  {[=] { // creates a lambda task for the pto
+            pto.set_pto(lifted);
+        }};
+        pros::delay(500);
+    }
+
+    
     // sled/wedge mechanism
     if (master.get_digital(DIGITAL_DOWN))
     {
