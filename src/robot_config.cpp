@@ -119,7 +119,7 @@ void ptoClass::set_pto(bool toggle)
         chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle);
         chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
         chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
-        while (lift_rot.get_position() < 7000)
+        while (lift_rot.get_position() < 8500)
         {
             chassis.left_motors[2] = 120;
             chassis.right_motors[2] = 120;

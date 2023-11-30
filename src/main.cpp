@@ -107,9 +107,16 @@ void arcadeCurv(pros::controller_analog_e_t power, pros::controller_analog_e_t t
  
     fwd = (exp(-t / 10) + exp((fabs(up) - 127) / 10) * (1 - exp(-t / 10))) * up;
     turning = -1*down;
-    
-    left_motors = (fwd - turning);
-    right_motors = (fwd + turning);
+    if(pto.pto_enable){
+        chassis.left_motors[0] = (fwd - turning);
+        chassis.left_motors[1] = (fwd - turning);
+        chassis.right_motors[0] = (fwd + turning);
+        chassis.right_motors[1] = (fwd + turning);
+        
+    } else{
+        left_motors = (fwd - turning);
+        right_motors = (fwd + turning);
+    }
 }
 
 void opcontrol() {
