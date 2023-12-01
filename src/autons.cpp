@@ -10,11 +10,18 @@ const int TURN_SPEED = 110;
 const int SWING_SPEED = 100;
 
 ///
-// Constants
+// ANCHOR Constants
 ///
 
-// It's best practice to tune constants when the robot is empty and with heavier game objects, or with lifts up vs down.
-// If the objects are light or the cog doesn't change much, then there isn't a concern here.
+void push_constants(){
+  chassis.set_slew_min_power(80, 80);
+  chassis.set_slew_distance(7, 7);
+  chassis.set_pid_constants(&chassis.headingPID, 12, 0, 20, 0);
+  chassis.set_pid_constants(&chassis.forward_drivePID, 0.7, 0, 4, 0);
+  chassis.set_pid_constants(&chassis.backward_drivePID, 0.7, 0, 4, 0);
+  chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 47, 15);
+  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 50, 0);
+}
 
 void default_constants()
 {
@@ -208,6 +215,7 @@ void interfered_example()
   chassis.wait_drive();
 }
 
+//ANCHOR right auto
 void right_auton()
 {
   intake = -127;
@@ -255,9 +263,11 @@ void right_auton()
   chassis.wait_drive();
 }
 
+//ANCHOR left auto
 void left_auton()
 {
 }
+
 
 void skillsStart(){
   chassis.reset_pid_targets(); // Resets PID targets to 0
@@ -284,6 +294,7 @@ void skillsStart(){
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 }
 
+//ANCHOR prog
 void skills()
 {
   chassis.set_turn_pid(45, 120);
@@ -294,7 +305,7 @@ void skills()
   chassis.wait_drive();
   hook.set_value(true);
   cata.is_continuous = true;
-  pros::delay(35000); //****************************
+  //pros::delay(35000); 
   cata.is_continuous = false;
   hook.set_value(false);
   chassis.set_turn_pid(45, 120);
@@ -312,16 +323,20 @@ void skills()
   chassis.wait_drive();
   chassis.set_swing_pid(ez::LEFT_SWING, -90, 120);
   chassis.wait_drive();
+  push_constants();
   chassis.set_drive_pid(-14, 120);
   chassis.wait_drive();
   chassis.set_drive_pid(14, 120);
   chassis.wait_drive();
+  default_constants();
   chassis.set_turn_pid(-100, 120);
   chassis.wait_drive();
+  push_constants();
   chassis.set_drive_pid(-14, 120);
   chassis.wait_drive();
   chassis.set_drive_pid(14, 120);
   chassis.wait_drive();
+  default_constants();
   chassis.set_turn_pid(0, 120);
   chassis.wait_drive();
   chassis.set_drive_pid(13, 120);
@@ -353,6 +368,7 @@ void skills()
   chassis.wait_drive();
   left_wing.set_value(false);
   right_wing.set_value(false);
+  default_constants();
   chassis.set_turn_pid(90, 120);
   chassis.wait_drive();
   chassis.set_drive_pid(-25, 120);
@@ -361,6 +377,7 @@ void skills()
   chassis.wait_drive();
   left_wing.set_value(true);
   right_wing.set_value(true);
+  push_constants();
   chassis.set_drive_pid(30, 120);
   chassis.wait_drive();
   chassis.set_drive_pid(-30, 120);
@@ -375,12 +392,3 @@ void no_auton()
 {
 }
 
-void push_constants(){
-  chassis.set_slew_min_power(80, 80);
-  chassis.set_slew_distance(7, 7);
-  chassis.set_pid_constants(&chassis.headingPID, 12, 0, 20, 0);
-  chassis.set_pid_constants(&chassis.forward_drivePID, 0.7, 0, 4, 0);
-  chassis.set_pid_constants(&chassis.backward_drivePID, 0.7, 0, 4, 0);
-  chassis.set_pid_constants(&chassis.turnPID, 5, 0.003, 47, 15);
-  chassis.set_pid_constants(&chassis.swingPID, 7, 0, 50, 0);
-}

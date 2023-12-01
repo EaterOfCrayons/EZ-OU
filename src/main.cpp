@@ -2,7 +2,7 @@
 #include "robot_config.hpp"
 #include "autons.hpp"
 
-// initialize runtime objects
+// ANCHOR runtime objects
 double fwd;
 double turning;
 float up;
@@ -11,6 +11,7 @@ bool hooker = false;
 bool wedge = false;
 bool lifted = false;
 
+// ANCHOR async cata implementation 
 void cata_control()
 {
     pros::Task continuous  {[=] { // creates a lambda task for cata.continuous
@@ -51,7 +52,7 @@ void terminal_print()
     }
 }
 
-
+// ANCHOR init
 void initialize() {
   ez::print_ez_template();
   pros::delay(500);
@@ -99,7 +100,7 @@ void autonomous() {
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
-// function implementing input curve in arcade drive controls
+// ANCHOR op curve implementation
 void arcadeCurv(pros::controller_analog_e_t power, pros::controller_analog_e_t turn, pros::Controller mast, float t)
 {
     up = mast.get_analog(power);
@@ -119,6 +120,7 @@ void arcadeCurv(pros::controller_analog_e_t power, pros::controller_analog_e_t t
     }
 }
 
+//ANCHOR opctrl
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);

@@ -1,7 +1,7 @@
 #include "robot_config.hpp"
 #include "main.h"
 
-// device configuration
+// ANCHOR device configuration
 
 int left_front_port = -1;
 int left_middle_port = -2;
@@ -27,7 +27,7 @@ int inertial_sensor_port = 11;
 #define SLED_PORT 'E'
 #define HOOK_PORT 'F'
 
-// Robot setup ========================================================================================================================================================================
+// ANCHOR Robot setup 
 
 // Defines motors:
 
@@ -58,7 +58,8 @@ pros::ADIDigitalOut ratchet(RATCHET_PORT);       // ratchet piston
 pros::Rotation cata_rot(cata_rot_port, true);  // catapult rotation sensor
 pros::Rotation lift_rot(lift_rot_port, false); // lift rotation sensor
 
-// Chassis constructor
+// ANCHOR Chassis constructor
+
 Drive chassis(
     // Left Chassis Ports (negative port will reverse it!)
     //   the first port is the sensored port (when trackers are not used!)
@@ -101,55 +102,58 @@ Drive chassis(
     // ,1
 );
 
-// pto setup
-
-void ptoClass::set_pto(bool toggle)
+/**
+ * ANCHOR toggle pto procedure
+ * @param bool toggle
+ * sets the pto state with given parameter
+*/
+void ptoClass::set_pto(bool toggle) 
 {
-    pto_enable = toggle;
+    pto_enable = toggle; //sets the global state variable to the deried state
 
-    if (toggle)
+    if (toggle) // if the pto is desired to be raised
     {
         
-        pto_piston.set_value(toggle);
-        right_motors = 30;
+        pto_piston.set_value(toggle); // actuate both pto pistons
+        right_motors = 30; // sets the right and left drive motors to spin at low speed to ensure that gear connections change flawlessly
         left_motors = 30;
         pros::delay(200);
         right_motors = 0;
         left_motors = 0;
-        chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle);
-        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
+        chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle); // disables the pto motors from the chassis copntrols
+        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD); // sets both motors to hold
         chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
-        while (lift_rot.get_position() < 8500)
+        while (lift_rot.get_position() < 8500) // continuously spins motors until the pto is raised to 85 degrees
         {
             chassis.left_motors[2] = 120;
             chassis.right_motors[2] = 120;
         }
         chassis.right_motors[2] = 0;
         chassis.left_motors[2] = 0;
-    } else if (!toggle){
-        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
+    } else if (!toggle){ // if the pto is desired to be lowerd
+        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST); // disable hold from both motors
         chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
-        while (lift_rot.get_position() > 1500){
+        while (lift_rot.get_position() > 1500){ //continuously spins the pto motors in reverse until thje pto is lowered to 15 degrees
             chassis.left_motors[2] = -120;
             chassis.right_motors[2] = -120;
         }
         chassis.right_motors[2] = 0;
         chassis.left_motors[2] = 0;
-        pto_piston.set_value(toggle);
+        pto_piston.set_value(toggle); // shift the pto pistons back to drive state
         right_motors = -30;
         left_motors = -30;
-        pros::delay(600);
+        pros::delay(200);
         right_motors = 0;
         left_motors = 0;
         chassis.right_motors[2] = 0;
         chassis.left_motors[2] = 0;
-        chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle);
+        chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle); // re-enables the pto motors and assigns them to the drive class
 
     }
-    master.rumble("-");
+    master.rumble("-"); // vibrates the controller to signal the driver that the state change has finished
 }
 
-// catapult control
+// ANCHOR catapult control
 void catapult::lower()
 { // catapult reset function
     shooter.set_brake_mode(E_MOTOR_BRAKE_HOLD);

@@ -37,9 +37,9 @@ public:
 class ptoClass // creates the pto class
 {
     public:
-    bool pto_enable{false};
-    void set_pto(bool toggle);
+    bool pto_enable{false}; // pto toggle variable
+    void set_pto(bool toggle); // pto toggle procedure
 };
 
-extern ptoClass pto;
+extern ptoClass pto; // creates an instance of the pto class object
 extern catapult cata; // creates an instance of the catapult object
