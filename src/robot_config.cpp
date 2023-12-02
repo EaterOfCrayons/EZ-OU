@@ -11,7 +11,7 @@ int right_front_port = 4;
 int right_middle_port = 5;
 int right_back_port = 6;
 
-int intake_port = -7;
+int intake_port = -14;
 
 int shooter_port = -8;
 
