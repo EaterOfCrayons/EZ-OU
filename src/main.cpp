@@ -105,7 +105,7 @@ void arcadeCurv(pros::controller_analog_e_t power, pros::controller_analog_e_t t
 {
     up = mast.get_analog(power);
     down = mast.get_analog(turn);
- 
+
     fwd = (exp(-t / 10) + exp((fabs(up) - 127) / 10) * (1 - exp(-t / 10))) * up;
     turning = -1*down;
     if(pto.pto_enable){
