@@ -7,16 +7,16 @@ int left_front_port = -1;
 int left_middle_port = -2;
 int left_back_port = -3;
 
-int right_front_port = 4;
+int right_front_port = 17;
 int right_middle_port = 5;
 int right_back_port = 6;
 
-int intake_port = -7;
+int intake_port = -14;
 
-int shooter_port = -8;
+int shooter_port = -9;
 
-int cata_rot_port = 9;
-int lift_rot_port = 10;
+int cata_rot_port = 8;
+int lift_rot_port = 20;
 
 int inertial_sensor_port = 11;
 
@@ -123,7 +123,7 @@ void ptoClass::set_pto(bool toggle)
         chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle); // disables the pto motors from the chassis copntrols
         chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD); // sets both motors to hold
         chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
-        while (lift_rot.get_position() < 8500) // continuously spins motors until the pto is raised to 85 degrees
+        while (lift_rot.get_position() < 9900) // continuously spins motors until the pto is raised to 85 degrees
         {
             chassis.left_motors[2] = 120;
             chassis.right_motors[2] = 120;
@@ -133,7 +133,7 @@ void ptoClass::set_pto(bool toggle)
     } else if (!toggle){ // if the pto is desired to be lowerd
         chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST); // disable hold from both motors
         chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
-        while (lift_rot.get_position() > 1500){ //continuously spins the pto motors in reverse until thje pto is lowered to 15 degrees
+        while (lift_rot.get_position() > 500){ //continuously spins the pto motors in reverse until thje pto is lowered to 15 degrees
             chassis.left_motors[2] = -120;
             chassis.right_motors[2] = -120;
         }

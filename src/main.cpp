@@ -190,19 +190,19 @@ void opcontrol() {
     }
 
     
-    // sled/wedge mechanism
+    // rachet mechanism
     if (master.get_digital(DIGITAL_DOWN))
     {
         wedge = !wedge;
-        pros::delay(200);
+        pros::delay(500);
     }
     if (wedge)
     {
-        sled.set_value(true);
+        ratchet.set_value(true);
     }
     if (!wedge)
     {
-        sled.set_value(false);
+        ratchet.set_value(false);
     }
 
     pros::delay(20);
