@@ -39,6 +39,7 @@ class ptoClass // creates the pto class
     public:
     bool pto_enable{false}; // pto toggle variable
     void set_pto(bool toggle); // pto toggle procedure
+    bool pto_override{false};
 };
 
 extern ptoClass pto; // creates an instance of the pto class object

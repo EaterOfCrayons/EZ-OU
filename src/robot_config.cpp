@@ -1,5 +1,5 @@
 #include "robot_config.hpp"
-#include "main.h"
+#include "pros/motors.h"
 
 // ANCHOR device configuration
 
@@ -123,7 +123,7 @@ void ptoClass::set_pto(bool toggle)
         chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle); // disables the pto motors from the chassis copntrols
         chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD); // sets both motors to hold
         chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
-        while (lift_rot.get_position() < 9900) // continuously spins motors until the pto is raised to 85 degrees
+        while (lift_rot.get_position() < 9900 && !pto_override) // continuously spins motors until the pto is raised to 85 degrees
         {
             chassis.left_motors[2] = 120;
             chassis.right_motors[2] = 120;
@@ -131,17 +131,22 @@ void ptoClass::set_pto(bool toggle)
         chassis.right_motors[2] = 0;
         chassis.left_motors[2] = 0;
     } else if (!toggle){ // if the pto is desired to be lowerd
-        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST); // disable hold from both motors
-        chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
-        while (lift_rot.get_position() > 500){ //continuously spins the pto motors in reverse until thje pto is lowered to 15 degrees
+        chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD); // disable hold from both motors
+        chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
+        while (lift_rot.get_position() > 500 && !pto_override){ //continuously spins the pto motors in reverse until thje pto is lowered to 15 degrees
             chassis.left_motors[2] = -120;
             chassis.right_motors[2] = -120;
         }
         chassis.right_motors[2] = 0;
         chassis.left_motors[2] = 0;
-        pto_piston.set_value(toggle); // shift the pto pistons back to drive state
-        right_motors = -30;
-        left_motors = -30;
+        if(!pto_override){
+            pto_piston.set_value(toggle); // shift the pto pistons back to drive state
+            chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST); // disable hold from both motors
+            chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
+            right_motors = -30;
+            left_motors = -30;
+        }
+        
         pros::delay(200);
         right_motors = 0;
         left_motors = 0;
