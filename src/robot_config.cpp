@@ -1,9 +1,9 @@
 #include "robot_config.hpp"
-#include "pros/motors.h"
+#include "main.h"
 
 // ANCHOR device configuration
 
-int left_front_port = -1;
+int left_front_port = -4;
 int left_middle_port = -2;
 int left_back_port = -3;
 
@@ -13,7 +13,7 @@ int right_back_port = 6;
 
 int intake_port = -14;
 
-int shooter_port = -9;
+int shooter_port = -12;
 
 int cata_rot_port = 8;
 int lift_rot_port = 20;
@@ -115,11 +115,11 @@ void ptoClass::set_pto(bool toggle)
     {
         
         pto_piston.set_value(toggle); // actuate both pto pistons
-        right_motors = 30; // sets the right and left drive motors to spin at low speed to ensure that gear connections change flawlessly
-        left_motors = 30;
+        chassis.left_motors[2] = 30;
+        chassis.right_motors[2] = 30;
         pros::delay(200);
-        right_motors = 0;
-        left_motors = 0;
+        chassis.left_motors[2] = 0;
+        chassis.right_motors[2] = 0;
         chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle); // disables the pto motors from the chassis copntrols
         chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD); // sets both motors to hold
         chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_HOLD);
@@ -143,13 +143,11 @@ void ptoClass::set_pto(bool toggle)
             pto_piston.set_value(toggle); // shift the pto pistons back to drive state
             chassis.right_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST); // disable hold from both motors
             chassis.left_motors[2].set_brake_mode(E_MOTOR_BRAKE_COAST);
-            right_motors = -30;
-            left_motors = -30;
+            chassis.left_motors[2] = -30;
+            chassis.right_motors[2] = -30;
         }
         
         pros::delay(200);
-        right_motors = 0;
-        left_motors = 0;
         chassis.right_motors[2] = 0;
         chassis.left_motors[2] = 0;
         chassis.pto_toggle({chassis.left_motors[2], chassis.right_motors[2]}, toggle); // re-enables the pto motors and assigns them to the drive class

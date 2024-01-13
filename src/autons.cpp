@@ -365,7 +365,7 @@ void skills()
   left_wing.set_value(true);
   right_wing.set_value(true);
   chassis.mode = ez::DISABLE;
-  chassis.set_tank(-127, -127);
+  chassis.set_tank(127, 127);
   pros::delay(3000);
   chassis.set_tank(0, 0);
   chassis.mode = ez::DRIVE;
@@ -375,14 +375,14 @@ void skills()
   right_wing.set_value(false);
   chassis.set_turn_pid(90, 120);
   chassis.wait_drive();
-  chassis.set_drive_pid(-20, 120);
+  chassis.set_drive_pid(-17, 120);
   chassis.wait_drive();
-  chassis.set_swing_pid(ez::LEFT_SWING, 180, 120);
+  chassis.set_swing_pid(ez::RIGHT_SWING, 180, 120);
   chassis.wait_drive();
   left_wing.set_value(true);
   right_wing.set_value(true);
   chassis.mode = ez::DISABLE;
-  chassis.set_tank(-127, -127);
+  chassis.set_tank(127, 127);
   pros::delay(3000);
   chassis.set_tank(0, 0);
   chassis.mode = ez::DRIVE;

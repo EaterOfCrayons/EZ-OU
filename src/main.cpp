@@ -41,7 +41,7 @@ void terminal_print() {
     float voltage_float =
         (fabs(chassis.left_velocity()) + fabs(chassis.right_velocity())) /
         2; // gets and stores the current power output in mV of the motors in
-           // float variables
+           // flo;[p;p;p;[p-;at variables
     float position_float =
         (fabs(chassis.left_sensor()) + fabs(chassis.right_sensor())) / 2;
     std::string voltage_str = std::to_string(
@@ -100,7 +100,7 @@ void autonomous() {
       .call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
-// ANCHOR op curve implementation
+// ANCHOR opcontrol curve implementation
 void arcadeCurv(pros::controller_analog_e_t power,
                 pros::controller_analog_e_t turn, pros::Controller mast,
                 float t) {
@@ -129,7 +129,7 @@ void opcontrol() {
   while (true) { // calls the arcade drive function
 
     arcadeCurv(pros::E_CONTROLLER_ANALOG_LEFT_Y,
-               pros::E_CONTROLLER_ANALOG_RIGHT_X, master, 10);
+               pros::E_CONTROLLER_ANALOG_RIGHT_X, master, 15);
 
     // intake
     if (master.get_digital(DIGITAL_L1)) // intake
@@ -195,6 +195,12 @@ void opcontrol() {
     } else if (master.get_digital(DIGITAL_DOWN)) {
       chassis.left_motors[2] = -127;
       chassis.right_motors[2] = -127;
+    }
+    if (pto.pto_override == true && !master.get_digital(DIGITAL_DOWN) &&
+        !master.get_digital(DIGITAL_UP)) {
+      chassis.left_motors[2] = 0;
+      chassis.right_motors[2] = 0;
+      pto.pto_override = false;
     }
 
     // rachet mechanism
